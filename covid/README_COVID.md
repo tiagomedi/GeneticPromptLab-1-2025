@@ -48,8 +48,8 @@ Local:11435 → 200.14.84.16:8080 → 172.16.40.247:11434 → Mistral
 ## 🔧 **Configuración**
 
 ### **Credenciales SSH:**
-- **Servidor 1**: `ignacio.medina1@200.14.84.16:8080` (contraseña: `ignacio.udp2025`)
-- **Servidor 2**: `colossus@172.16.40.247` (contraseña: `research202x`)
+- **Servidor 1**: `ignacio.medina1@200.14.84.16:8080` (contraseña: `xxx`)
+- **Servidor 2**: `colossus@172.16.40.247` (contraseña: `xxx`)
 
 ### **Parámetros ajustables:**
 - `--population`: Tamaño de población inicial (default: 5)
