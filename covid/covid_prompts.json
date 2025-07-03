@@ -1,22 +1,35 @@
 {
-  "best_prompt": "Escribe sobre coronavirus",
-  "best_fitness": 0.004251089617021751,
+  "best_prompt_structure": {
+    "role": "researcher",
+    "task_description": "creating educational material about health measures",
+    "texto": "your health is always our top priority which is why well only be doing takeout and delivery at all 3 of our torontopho locations order online ",
+    "modifics": "incorporating interdisciplinary viewpoints"
+  },
+  "best_prompt_formatted": "Role: researcher\nTask Description: creating educational material about health measures\nModifications: incorporating interdisciplinary viewpoints",
+  "best_fitness": 0.04193775019493243,
   "history": [
     {
       "generation": 1,
-      "best_fitness": 0.004251089617021751,
-      "avg_fitness": 0.003204410683796698
+      "best_fitness": 0.035585439433429226,
+      "avg_fitness": 0.026957225435525412
     },
     {
       "generation": 2,
-      "best_fitness": 0.004251089617021751,
-      "avg_fitness": 0.0029097575858375285
+      "best_fitness": 0.04193775019493243,
+      "avg_fitness": 0.026376186180414447
+    },
+    {
+      "generation": 3,
+      "best_fitness": 0.04193775019493243,
+      "avg_fitness": 0.02347227532558728
     }
   ],
   "parameters": {
-    "population_size": 3,
-    "generations": 2,
+    "population_size": 5,
+    "generations": 3,
     "mutation_rate": 0.1,
-    "sample_size": 3
+    "sample_size": 500,
+    "modelo_llm": "llama3.1",
+    "temperatura": 0.7
   }
 }
