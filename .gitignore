@@ -1,3 +1,6 @@
 **/*.key
 covid/corpus.csv
 covid/ssh_credentials.json
+covid/INSTRUCCIONES_RAPIDAS.md
+covid/README_COVID.md
+covid/README_SSH_AUTO.md
