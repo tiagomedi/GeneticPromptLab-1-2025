@@ -9,6 +9,9 @@ import time
 import sys
 import pandas as pd
 import os
+import pexpect
+import subprocess
+
 
 def test_ssh_tunnel(port=11435):
     """
@@ -37,7 +40,7 @@ def test_ssh_tunnel(port=11435):
     except requests.exceptions.RequestException as e:
         print(f"❌ No se puede conectar al túnel SSH: {e}")
         print("   Asegúrate de que el túnel SSH esté activo:")
-        print("   python setup_ssh_tunnel.py")
+        print("   python setup_ssh_tunnel_auto.py")
         return False
 
 def test_mistral_connection(port=11435, model_name="mistral"):
@@ -135,7 +138,7 @@ def test_dependencies():
     print("📦 Verificando dependencias...")
     
     required_packages = [
-        'pandas', 'numpy', 'scikit-learn', 'requests'
+        'pandas', 'numpy', 'sklearn', 'requests'
     ]
     
     missing_packages = []
@@ -196,7 +199,7 @@ def main():
         print("\nPasos para solucionar:")
         print("1. Instalar dependencias faltantes")
         print("2. Verificar que corpus.csv esté presente")
-        print("3. Configurar túnel SSH: python setup_ssh_tunnel.py")
+        print("3. Configurar túnel SSH: python setup_ssh_tunnel_auto.py")
         print("4. Verificar que Mistral esté corriendo en el servidor")
     
     return all_tests_passed

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 Script principal para ejecutar el COVID-19 Genetic Prompt Optimizer
-Automatiza la configuración del túnel SSH y la ejecución del optimizador
+Ejecuta Llama3 directamente en el servidor remoto
 """
 
 import subprocess
 import time
 import sys
 import os
-import threading
 import argparse
 from typing import Optional
 
@@ -18,21 +17,17 @@ class CovidOptimizerRunner:
     """
     
     def __init__(self, 
-                 ssh_port: int = 11435,
                  corpus_file: str = "corpus.csv",
-                 model_name: str = "mistral",
                  population_size: int = 5,
                  generations: int = 3,
+                 mutation_rate: float = 0.1,
                  sample_size: int = 500):
         
-        self.ssh_port = ssh_port
         self.corpus_file = corpus_file
-        self.model_name = model_name
         self.population_size = population_size
         self.generations = generations
+        self.mutation_rate = mutation_rate
         self.sample_size = sample_size
-        
-        self.tunnel_process = None
         
     def setup_environment(self):
         """
@@ -50,86 +45,42 @@ class CovidOptimizerRunner:
         try:
             import pandas
             import sklearn
-            import requests
+            import pexpect
             import numpy
             print("✅ Dependencias verificadas")
         except ImportError as e:
             print(f"❌ Falta dependencia: {e}")
-            print("   Ejecutar: pip install pandas scikit-learn requests numpy")
+            print("   Ejecutar: pip install pandas scikit-learn pexpect numpy")
             return False
         
         return True
     
-    def start_ssh_tunnel(self):
-        """
-        Inicia el túnel SSH automáticamente usando credenciales del JSON
-        """
-        print("🔗 Iniciando túnel SSH automático...")
-        
-        try:
-            # Usar el script automático de SSH
-            cmd = [sys.executable, "setup_ssh_tunnel_auto.py"]
-            
-            print("   💡 Usando credenciales automáticas desde ssh_credentials.json")
-            
-            # Ejecutar script automático en background
-            self.tunnel_process = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            
-            # Esperar un poco para que se establezca
-            print("   Esperando conexión...")
-            time.sleep(15)  # Más tiempo para la conexión automática
-            
-            # Verificar si el proceso sigue activo
-            if self.tunnel_process.poll() is None:
-                print("✅ Túnel SSH automático iniciado")
-                return True
-            else:
-                print("❌ Error al iniciar túnel SSH automático")
-                # Mostrar el error si está disponible
-                if self.tunnel_process.stderr:
-                    stderr_output = self.tunnel_process.stderr.read().decode()
-                    if stderr_output:
-                        print(f"   Error: {stderr_output}")
-                return False
-                
-        except Exception as e:
-            print(f"❌ Error configurando túnel SSH automático: {e}")
-            return False
-    
     def test_connection(self):
         """
-        Prueba la conexión con Ollama/Mistral
+        Prueba la conexión con el servidor remoto y Llama3
         """
         print("🧪 Probando conexión...")
         
-        # Usar el script de prueba
+        from setup_ssh_tunnel_auto import RemoteSSHExecutor
+        
         try:
-            result = subprocess.run(
-                [sys.executable, "test_connection.py"],
-                capture_output=True,
-                text=True,
-                timeout=30
-            )
+            executor = RemoteSSHExecutor()
             
-            if result.returncode == 0:
-                print("✅ Todas las pruebas pasaron")
-                return True
+            if executor.connect():
+                if executor.test_llama():
+                    print("✅ Conexión y Llama3 verificados")
+                    executor.close()
+                    return True
+                else:
+                    print("❌ Llama3 no está funcionando")
+                    executor.close()
+                    return False
             else:
-                print("❌ Falló alguna prueba:")
-                print(result.stdout)
-                print(result.stderr)
+                print("❌ No se pudo conectar al servidor")
                 return False
                 
-        except subprocess.TimeoutExpired:
-            print("⏰ Timeout en las pruebas")
-            return False
         except Exception as e:
-            print(f"❌ Error en pruebas: {e}")
+            print(f"❌ Error probando conexión: {e}")
             return False
     
     def run_optimizer(self):
@@ -138,50 +89,23 @@ class CovidOptimizerRunner:
         """
         print("🚀 Ejecutando optimizador genético...")
         
-        # Configurar argumentos
-        env = os.environ.copy()
-        env['COVID_SSH_PORT'] = str(self.ssh_port)
-        env['COVID_CORPUS_FILE'] = self.corpus_file
-        env['COVID_MODEL_NAME'] = self.model_name
-        env['COVID_POPULATION_SIZE'] = str(self.population_size)
-        env['COVID_GENERATIONS'] = str(self.generations)
-        env['COVID_SAMPLE_SIZE'] = str(self.sample_size)
-        
         try:
-            # Ejecutar optimizador
-            result = subprocess.run(
-                [sys.executable, "covid_genetic_optimizer.py"],
-                env=env,
-                text=True
+            from covid_genetic_optimizer import CovidGeneticOptimizer
+            
+            optimizer = CovidGeneticOptimizer(
+                corpus_file=self.corpus_file,
+                population_size=self.population_size,
+                generations=self.generations,
+                mutation_rate=self.mutation_rate,
+                sample_size=self.sample_size
             )
             
-            if result.returncode == 0:
-                print("✅ Optimización completada")
-                return True
-            else:
-                print("❌ Error en optimización")
-                return False
-                
+            optimizer.optimize()
+            return True
+            
         except Exception as e:
             print(f"❌ Error ejecutando optimizador: {e}")
             return False
-    
-    def cleanup(self):
-        """
-        Limpia recursos (cierra túnel SSH)
-        """
-        print("🧹 Limpiando recursos...")
-        
-        if self.tunnel_process:
-            try:
-                self.tunnel_process.terminate()
-                self.tunnel_process.wait(timeout=5)
-                print("✅ Túnel SSH cerrado")
-            except subprocess.TimeoutExpired:
-                self.tunnel_process.kill()
-                print("⚠️ Túnel SSH forzado a cerrar")
-            except Exception as e:
-                print(f"⚠️ Error cerrando túnel: {e}")
     
     def run_full_pipeline(self):
         """
@@ -189,28 +113,28 @@ class CovidOptimizerRunner:
         """
         print("🦠 COVID-19 Genetic Prompt Optimizer")
         print("=" * 50)
+        self._show_system_info()
         
         try:
             # 1. Configurar entorno
             if not self.setup_environment():
                 return False
             
-            # 2. Iniciar túnel SSH
-            if not self.start_ssh_tunnel():
+            # 2. Probar conexión
+            if not self.test_connection():
+                print("❌ Falló la prueba de conexión")
                 return False
             
-            # 3. Probar conexión
-            if not self.test_connection():
-                print("⚠️ Falló la prueba de conexión, pero continuando...")
-            
-            # 4. Ejecutar optimizador
+            # 3. Ejecutar optimizador
             success = self.run_optimizer()
             
             if success:
                 print("\n🎉 ¡Pipeline completado exitosamente!")
                 print("   Revisa los resultados en: covid_prompts.json")
+                self._show_completion_info()
             else:
                 print("\n❌ Pipeline falló")
+                self._show_troubleshooting_info()
             
             return success
             
@@ -220,8 +144,57 @@ class CovidOptimizerRunner:
         except Exception as e:
             print(f"\n❌ Error inesperado: {e}")
             return False
-        finally:
-            self.cleanup()
+    
+    def _show_system_info(self):
+        """
+        Muestra información del sistema al inicio
+        """
+        print("📋 Configuración:")
+        print(f"   📁 Corpus: {self.corpus_file}")
+        print(f"   👥 Población: {self.population_size}")
+        print(f"   🧬 Generaciones: {self.generations}")
+        print(f"   🎲 Tasa de mutación: {self.mutation_rate}")
+        print(f"   📏 Tamaño de muestra: {self.sample_size}")
+        print()
+    
+    def _show_completion_info(self):
+        """
+        Muestra información de completado exitoso
+        """
+        print("\n📊 Información del procesamiento:")
+        print(f"   📁 Corpus: {self.corpus_file}")
+        print(f"   👥 Población: {self.population_size}")
+        print(f"   🧬 Generaciones: {self.generations}")
+        print(f"   🎲 Tasa de mutación: {self.mutation_rate}")
+        print(f"   📏 Muestra: {self.sample_size}")
+        
+        print("\n📋 Archivos generados:")
+        if os.path.exists("covid_prompts.json"):
+            print("   ✅ covid_prompts.json - Prompts optimizados")
+        
+        print("\n🔄 Próximos pasos:")
+        print("   1. Revisar prompts generados en covid_prompts.json")
+        print("   2. Analizar la efectividad de los prompts")
+        print("   3. Ejecutar nuevamente con diferentes parámetros si es necesario")
+    
+    def _show_troubleshooting_info(self):
+        """
+        Muestra información de solución de problemas
+        """
+        print("\n🔧 Solución de problemas:")
+        print("   1. Verificar conexión a internet")
+        print("   2. Verificar credenciales en ssh_credentials.json")
+        print("   3. Verificar que el servidor remoto esté accesible")
+        print("   4. Verificar que Llama3 esté instalado y funcionando")
+        
+        print("\n🚀 Comandos útiles:")
+        print("   - Probar conexión: python3 diagnostico_ssh.py")
+        print("   - Verificar Llama3: ollama list")
+        
+        print("\n📞 Diagnóstico:")
+        print("   - Verificar que las credenciales SSH sean correctas")
+        print("   - Verificar que Llama3 esté instalado en el servidor")
+        print("   - Verificar que el servidor tenga suficiente memoria para Llama3")
 
 def main():
     """
@@ -229,16 +202,14 @@ def main():
     """
     parser = argparse.ArgumentParser(description="COVID-19 Genetic Prompt Optimizer")
     
-    parser.add_argument("--ssh-port", type=int, default=11435,
-                       help="Puerto local para túnel SSH (default: 11435)")
     parser.add_argument("--corpus", type=str, default="corpus.csv",
                        help="Archivo del corpus (default: corpus.csv)")
-    parser.add_argument("--model", type=str, default="mistral",
-                       help="Modelo de LLM (default: mistral)")
     parser.add_argument("--population", type=int, default=5,
                        help="Tamaño de población inicial (default: 5)")
     parser.add_argument("--generations", type=int, default=3,
                        help="Número de generaciones (default: 3)")
+    parser.add_argument("--mutation-rate", type=float, default=0.1,
+                       help="Tasa de mutación (default: 0.1)")
     parser.add_argument("--sample-size", type=int, default=500,
                        help="Tamaño de muestra del corpus (default: 500)")
     parser.add_argument("--test-only", action="store_true",
@@ -248,21 +219,17 @@ def main():
     
     # Crear runner
     runner = CovidOptimizerRunner(
-        ssh_port=args.ssh_port,
         corpus_file=args.corpus,
-        model_name=args.model,
         population_size=args.population,
         generations=args.generations,
+        mutation_rate=args.mutation_rate,
         sample_size=args.sample_size
     )
     
     if args.test_only:
         # Solo ejecutar pruebas
         print("🧪 Modo de prueba")
-        runner.setup_environment()
-        runner.start_ssh_tunnel()
         success = runner.test_connection()
-        runner.cleanup()
     else:
         # Ejecutar pipeline completo
         success = runner.run_full_pipeline()

@@ -31,34 +31,11 @@ python3 test_auto_ssh.py
 ## 🔧 Configuración
 
 ### Credenciales SSH (`ssh_credentials.json`)
-<!-- ```json
-{
-  "ssh_config": {
-    "jump_host": {
-      "host": "200.14.84.16",
-      "port": 8080,
-      "username": "ignacio.medina1",
-      "password": "ignacio.udp2025"
-    },
-    "target_host": {
-      "host": "172.16.40.247",
-      "port": 22,
-      "username": "colossus",
-      "password": "research202x"
-    }
-  },
-  "tunnel_config": {
-    "local_port": 11435,
-    "remote_host": "172.16.40.247",
-    "remote_port": 11434
-  }
-}
-``` -->
 
 ## 🔄 Flujo de conexión
 
-1. **Jump Host**: `ignacio.medina1@200.14.84.16:8080`
-2. **Target Host**: `colossus@172.16.40.247:22`
+1. **Jump Host**: `xxxxx`
+2. **Target Host**: `xxx`
 3. **Túnel**: `localhost:11435 → 172.16.40.247:11434`
 4. **Ollama**: Accesible en `http://localhost:11435/api/chat`
 

@@ -1,183 +1,299 @@
 #!/usr/bin/env python3
 """
-Script para configurar túnel SSH automáticamente usando credenciales del archivo JSON
+Script para ejecutar Llama3 directamente en el servidor remoto vía SSH
 """
 
 import json
-import subprocess
-import time
 import os
-import signal
 import sys
-import threading
-from typing import Optional
+import time
+import paramiko
+from typing import Dict, Any, Tuple, Optional
 
-try:
-    import pexpect
-except ImportError:
-    print("❌ pexpect no está instalado. Instalando...")
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "pexpect"])
-    import pexpect
-
-class AutoSSHTunnel:
+class RemoteSSHExecutor:
+    """Clase para ejecutar comandos remotamente vía SSH"""
+    
     def __init__(self, credentials_file: str = "ssh_credentials.json"):
         self.credentials_file = credentials_file
-        self.tunnel_process: Optional[pexpect.spawn] = None
-        self.config = self._load_credentials()
+        self.credentials = None
+        self.jump_client = None
+        self.target_client = None
+        self.channel = None
         
-    def _load_credentials(self) -> dict:
-        """Cargar credenciales desde archivo JSON"""
+        self._load_credentials()
+        
+    def _load_credentials(self) -> bool:
+        """Cargar credenciales desde archivo"""
         try:
             with open(self.credentials_file, 'r') as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print(f"❌ Archivo de credenciales no encontrado: {self.credentials_file}")
-            sys.exit(1)
-        except json.JSONDecodeError:
-            print(f"❌ Error al leer el archivo JSON: {self.credentials_file}")
-            sys.exit(1)
-    
-    def setup_tunnel(self) -> bool:
-        """Configurar túnel SSH automáticamente"""
-        print("🔗 Configurando túnel SSH automático...")
-        
-        jump_host = self.config["ssh_config"]["jump_host"]
-        target_host = self.config["ssh_config"]["target_host"]
-        tunnel_config = self.config["tunnel_config"]
-        
-        # Comando SSH con ProxyJump
-        ssh_command = (
-            f"ssh -N -L {tunnel_config['local_port']}:{tunnel_config['remote_host']}:{tunnel_config['remote_port']} "
-            f"-J {jump_host['username']}@{jump_host['host']}:{jump_host['port']} "
-            f"{target_host['username']}@{target_host['host']} "
-            f"-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "
-            f"-o ServerAliveInterval=60"
-        )
-        
-        print(f"   Ejecutando: {ssh_command}")
-        print("   🔑 Usando credenciales automáticas...")
-        
-        try:
-            # Iniciar proceso SSH
-            self.tunnel_process = pexpect.spawn(ssh_command, timeout=30)
-            
-            # Manejar primera contraseña (jump host)
-            index = self.tunnel_process.expect([
-                "password:",
-                "Password:",
-                pexpect.TIMEOUT,
-                pexpect.EOF
-            ])
-            
-            if index in [0, 1]:
-                print("   🔑 Enviando primera contraseña (jump host)...")
-                self.tunnel_process.sendline(jump_host["password"])
-                
-                # Manejar segunda contraseña (target host)
-                index = self.tunnel_process.expect([
-                    "password:",
-                    "Password:",
-                    pexpect.TIMEOUT,
-                    pexpect.EOF
-                ])
-                
-                if index in [0, 1]:
-                    print("   🔑 Enviando segunda contraseña (target host)...")
-                    self.tunnel_process.sendline(target_host["password"])
-                    
-                    # Esperar a que se establezca la conexión
-                    time.sleep(3)
-                    
-                    if self.tunnel_process.isalive():
-                        print("✅ Túnel SSH establecido exitosamente")
-                        return True
-                    else:
-                        print("❌ El túnel SSH se cerró inesperadamente")
-                        return False
-                else:
-                    print("❌ Timeout o error esperando segunda contraseña")
-                    return False
-            else:
-                print("❌ Timeout o error esperando primera contraseña")
-                return False
-                
-        except pexpect.exceptions.TIMEOUT:
-            print("❌ Timeout al establecer túnel SSH")
-            return False
+                self.credentials = json.load(f)
+            print("✅ Credenciales cargadas desde ssh_credentials.json")
+            return True
         except Exception as e:
-            print(f"❌ Error al establecer túnel SSH: {e}")
+            print(f"❌ Error cargando credenciales: {e}")
             return False
     
-    def test_connection(self) -> bool:
-        """Probar la conexión del túnel"""
-        import requests
-        
-        local_port = self.config["tunnel_config"]["local_port"]
-        test_url = f"http://localhost:{local_port}/api/tags"
+    def connect(self) -> bool:
+        """Establecer conexión SSH"""
+        if not self.credentials:
+            return False
+            
+        print("🔗 Conectando al servidor remoto...")
         
         try:
-            response = requests.get(test_url, timeout=5)
-            if response.status_code == 200:
-                print("✅ Túnel SSH funcionando correctamente")
+            ssh_config = self.credentials['ssh_config']
+            jump_host = ssh_config['jump_host']
+            target_host = ssh_config['target_host']
+            
+            print("✅ Credenciales verificadas correctamente")
+            print(f"   Jump host: {jump_host['username']}@{jump_host['host']}:{jump_host['port']}")
+            print(f"   Target host: {target_host['username']}@{target_host['host']}")
+            print(f"   Modelo: {self.credentials['model_config']['model']}")
+            
+            # Conectar al jump host
+            self.jump_client = paramiko.SSHClient()
+            self.jump_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            self.jump_client.connect(
+                hostname=jump_host['host'],
+                port=jump_host['port'],
+                username=jump_host['username'],
+                password=jump_host['password']
+            )
+            
+            # Configurar el túnel
+            jump_transport = self.jump_client.get_transport()
+            dest_addr = (target_host['host'], target_host['port'])
+            local_addr = ('', 0)  # bind to any local port
+            self.channel = jump_transport.open_channel(
+                "direct-tcpip", dest_addr, local_addr
+            )
+            
+            # Conectar al target host
+            self.target_client = paramiko.SSHClient()
+            self.target_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            self.target_client.connect(
+                hostname=target_host['host'],
+                port=target_host['port'],
+                username=target_host['username'],
+                password=target_host['password'],
+                sock=self.channel
+            )
+            
+            print("✅ Conexión SSH establecida")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error de conexión: {e}")
+            self.close()
+            return False
+    
+    def run_command(self, command: str, timeout: int = 30) -> Tuple[bool, str]:
+        """Ejecutar comando en el servidor remoto"""
+        if not self.target_client:
+            return False, "No hay conexión SSH"
+            
+        try:
+            stdin, stdout, stderr = self.target_client.exec_command(command, timeout=timeout)
+            
+            # Para comandos de ollama, necesitamos manejar la salida de manera diferente
+            if "ollama run" in command:
+                # Dar tiempo para que ollama procese
+                time.sleep(2)
+                
+            output = stdout.read().decode()
+            error = stderr.read().decode()
+            
+            if error and "warning" not in error.lower():
+                print(f"⚠️ Error: {error}")
+                return False, error
+                
+            return True, output
+            
+        except Exception as e:
+            print(f"❌ Error ejecutando comando: {e}")
+            return False, str(e)
+    
+    def test_llama_interactive(self) -> bool:
+        """Probar Llama3 usando un enfoque interactivo"""
+        print("   🧪 Probando ejecución interactiva...")
+        
+        try:
+            # Crear una sesión interactiva
+            channel = self.target_client.invoke_shell()
+            
+            # Enviar comando
+            channel.send("ollama run llama3.1\n")
+            time.sleep(3)  # Esperar a que se inicie
+            
+            # Enviar prompt simple
+            channel.send("Hi\n")
+            time.sleep(5)  # Esperar respuesta
+            
+            # Leer respuesta
+            output = ""
+            while channel.recv_ready():
+                output += channel.recv(1024).decode()
+            
+            # Salir
+            channel.send("exit\n")
+            channel.close()
+            
+            if output and len(output) > 10:
+                print("✅ Llama3 está funcionando correctamente")
+                print(f"   Respuesta de prueba:\n{output[-200:]}")
                 return True
             else:
-                print(f"❌ Error en túnel SSH: {response.status_code}")
+                print("❌ No se recibió respuesta válida")
                 return False
+                
         except Exception as e:
-            print(f"❌ Error probando túnel SSH: {e}")
+            print(f"❌ Error en prueba interactiva: {e}")
             return False
     
-    def close_tunnel(self):
-        """Cerrar el túnel SSH"""
-        if self.tunnel_process and self.tunnel_process.isalive():
-            print("🧹 Cerrando túnel SSH...")
-            self.tunnel_process.terminate()
-            self.tunnel_process.wait()
-            print("✅ Túnel SSH cerrado")
+    def test_llama(self) -> bool:
+        """Probar que Llama3 está funcionando"""
+        print("\n🧪 Probando Llama3...")
+        
+        # Verificar que Ollama está instalado
+        success, output = self.run_command("which ollama")
+        if not success or "ollama" not in output:
+            print("❌ Ollama no está instalado en el servidor")
+            return False
+            
+        ollama_path = output.strip()
+        print(f"✅ Ollama encontrado en: {ollama_path}")
+        
+        # Verificar estado del servicio
+        print("   🔍 Verificando servicio Ollama...")
+        success, output = self.run_command("ps aux | grep ollama | grep -v grep")
+        
+        if not success or not output:
+            print("⚠️ Servicio Ollama no está activo")
+            print("   🔄 Iniciando servicio...")
+            success, _ = self.run_command(f"{ollama_path} serve &")
+            if not success:
+                print("❌ Error iniciando servicio Ollama")
+                return False
+                
+            # Esperar a que el servicio esté listo
+            print("   ⏳ Esperando a que el servicio esté listo...")
+            time.sleep(30)  # Esperar 30 segundos
+        else:
+            print("✅ Servicio Ollama está activo")
+            
+        # Verificar que Llama3 está disponible
+        success, output = self.run_command(f"{ollama_path} list")
+        if not success:
+            print("❌ Error verificando modelos disponibles")
+            return False
+            
+        if "llama3.1" not in output.lower():
+            print("❌ Modelo llama3.1 no está disponible")
+            print("   🔄 Instalando llama3.1 (esto puede tomar varios minutos)...")
+            success, _ = self.run_command(f"{ollama_path} pull llama3.1", timeout=600)
+            if not success:
+                print("❌ Error instalando llama3.1")
+                return False
+            
+            # Verificar instalación
+            success, output = self.run_command(f"{ollama_path} list")
+            if not success or "llama3.1" not in output.lower():
+                print("❌ Error verificando instalación de llama3.1")
+                return False
+        
+        # Probar Llama3 con método interactivo
+        return self.test_llama_interactive()
     
-    def keep_alive(self):
-        """Mantener el túnel activo"""
-        def signal_handler(signum, frame):
-            print("\n🛑 Recibida señal de terminación...")
-            self.close_tunnel()
-            sys.exit(0)
-        
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
-        
-        print("⏳ Manteniendo túnel activo... (Ctrl+C para terminar)")
+    def run_ollama_command(self, prompt: str, timeout: int = 30) -> Tuple[bool, str]:
+        """Ejecutar un comando específico con ollama"""
         try:
-            while self.tunnel_process and self.tunnel_process.isalive():
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print("\n🛑 Terminando túnel SSH...")
-            self.close_tunnel()
+            # Crear una sesión interactiva
+            channel = self.target_client.invoke_shell()
+            
+            # Enviar comando para iniciar ollama
+            channel.send("ollama run llama3.1\n")
+            time.sleep(3)  # Esperar a que se inicie
+            
+            # Enviar el prompt
+            channel.send(f"{prompt}\n")
+            time.sleep(5)  # Esperar respuesta
+            
+            # Leer respuesta
+            output = ""
+            while channel.recv_ready():
+                output += channel.recv(1024).decode()
+            
+            # Salir de ollama
+            channel.send("/bye\n")
+            time.sleep(1)
+            channel.close()
+            
+            # Limpiar la salida para extraer solo la respuesta
+            lines = output.split('\n')
+            response_lines = []
+            collecting = False
+            
+            for line in lines:
+                if ">>>" in line and collecting:
+                    break
+                if collecting:
+                    response_lines.append(line)
+                if prompt in line:
+                    collecting = True
+            
+            response = '\n'.join(response_lines).strip()
+            
+            if response:
+                return True, response
+            else:
+                return False, "No se recibió respuesta"
+                
+        except Exception as e:
+            print(f"❌ Error ejecutando comando ollama: {e}")
+            return False, str(e)
+    
+    def close(self):
+        """Cerrar conexiones SSH"""
+        print("🧹 Cerrando conexión SSH...")
+        
+        if self.target_client:
+            self.target_client.close()
+            
+        if self.channel:
+            self.channel.close()
+            
+        if self.jump_client:
+            self.jump_client.close()
+            
+        print("✅ Conexión SSH cerrada")
 
 def main():
-    print("🚀 Configurador Automático de Túnel SSH")
+    """Función principal"""
+    print("🚀 Ejecutor Remoto SSH para Llama3")
     print("=" * 50)
     
-    tunnel = AutoSSHTunnel()
+    executor = RemoteSSHExecutor()
     
     try:
-        if tunnel.setup_tunnel():
-            # Probar conexión
-            print("\n🧪 Probando conexión...")
-            if tunnel.test_connection():
-                print("\n🎉 ¡Túnel SSH configurado y funcionando!")
-                print("   El túnel estará activo hasta que cierres este script.")
-                tunnel.keep_alive()
+        if executor.connect():
+            if executor.test_llama():
+                print("\n🎉 ¡Conexión y Llama3 funcionando correctamente!")
+                print("   Puedes usar esta conexión para ejecutar comandos remotos.")
+                
+                # Ejemplo de uso
+                print("\n📝 Ejemplo de uso:")
+                success, output = executor.run_command('echo "¿Qué es COVID-19?" | ollama run llama2')
+                if success:
+                    print(f"Respuesta:\n{output}")
             else:
-                print("\n⚠️ Túnel establecido pero no responde. Verifica Ollama en el servidor.")
-                tunnel.keep_alive()
+                print("\n❌ Llama3 no está funcionando correctamente")
         else:
-            print("\n❌ No se pudo establecer el túnel SSH")
-            sys.exit(1)
-    
-    except Exception as e:
-        print(f"\n❌ Error: {e}")
-        tunnel.close_tunnel()
-        sys.exit(1)
+            print("\n❌ No se pudo establecer la conexión SSH")
+            
+    except KeyboardInterrupt:
+        print("\n🛑 Interrumpido por el usuario")
+    finally:
+        executor.close()
 
 if __name__ == "__main__":
     main() 
