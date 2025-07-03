@@ -9,7 +9,7 @@ import random
 import re
 import pandas as pd
 import numpy as np
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, cast, Any
 import time
 import sys
 import os
@@ -60,9 +60,9 @@ class CovidGeneticOptimizer(GeneticPromptLab):
         
         # Cargar y procesar datos
         self.corpus_data = self._load_corpus()
-        self.vectorizer = None
+        self.vectorizer: Optional[TfidfVectorizer] = None
         self.text_embeddings = None
-        self.sampled_texts = None
+        self.sampled_texts: Optional[List[str]] = None
         
         print(f"✅ CovidGeneticOptimizer inicializado")
         print(f"   Corpus: {len(self.corpus_data)} documentos")
@@ -100,12 +100,15 @@ class CovidGeneticOptimizer(GeneticPromptLab):
             df['text'] = df[main_text_column].astype(str)
             
             # Filtrar textos muy cortos o muy largos
-            df = df[df['text'].str.len() > 50]
-            df = df[df['text'].str.len() < 5000]
+            text_series = cast(pd.Series, df['text'])
+            df = df[text_series.str.len() > 50]
+            df = df[text_series.str.len() < 5000]
             
             print(f"   Documentos después de limpieza: {len(df)}")
             
-            return df[['text']].reset_index(drop=True)
+            # Retornar DataFrame explícitamente
+            result_df = pd.DataFrame({'text': df['text'].tolist()})
+            return result_df
             
         except Exception as e:
             print(f"❌ Error al cargar corpus: {e}")
@@ -152,9 +155,9 @@ class CovidGeneticOptimizer(GeneticPromptLab):
         self.text_embeddings = self.vectorizer.fit_transform(sample_texts)
         self.sampled_texts = sample_texts
         
-        print(f"✅ Embeddings preparados: {self.text_embeddings.shape}")
+        print(f"✅ Embeddings preparados: {self.text_embeddings.shape}")  # type: ignore
     
-    def _connect_to_mistral(self, messages: List[Dict], temperature: float = 0.8) -> Optional[str]:
+    def _connect_to_mistral(self, messages: List[Dict[str, str]], temperature: float = 0.8) -> Optional[str]:
         """
         Conecta a Mistral vía túnel SSH
         """
@@ -190,8 +193,16 @@ class CovidGeneticOptimizer(GeneticPromptLab):
         """
         self._prepare_text_embeddings()
         
+        # Verificar que sampled_texts no sea None
+        if self.sampled_texts is None:
+            return []
+        
         if len(self.sampled_texts) <= n:
             return self.sampled_texts
+        
+        # Verificar que text_embeddings no sea None
+        if self.text_embeddings is None:
+            return self.sampled_texts[:n]
         
         # Clustering para diversidad
         kmeans = KMeans(n_clusters=min(n, len(self.sampled_texts)), random_state=42)
@@ -204,7 +215,7 @@ class CovidGeneticOptimizer(GeneticPromptLab):
             if len(cluster_indices) > 0:
                 # Seleccionar el texto más cercano al centroide del cluster
                 cluster_embeddings = self.text_embeddings[cluster_indices]
-                centroid = cluster_embeddings.mean(axis=0)
+                centroid = cluster_embeddings.mean(axis=0)  # type: ignore
                 
                 similarities = cosine_similarity(cluster_embeddings, centroid.reshape(1, -1))
                 best_idx = cluster_indices[similarities.argmax()]
@@ -325,7 +336,7 @@ class CovidGeneticOptimizer(GeneticPromptLab):
         return [random.random() for _ in prompts]
     
     def select_top_prompts(self, fitness_scores: List[float], population: List[str], 
-                          prompt_answers_list: List = None, top_fraction: float = 0.5) -> List[str]:
+                          prompt_answers_list: Optional[List[Any]] = None, top_fraction: float = 0.5) -> List[str]:
         """
         Selecciona los mejores prompts (placeholder)
         """
@@ -334,7 +345,7 @@ class CovidGeneticOptimizer(GeneticPromptLab):
         return population[:n_select]
     
     def crossover_using_gpt(self, prompts: List[str], questions_list: List[str], 
-                           correct_answers_list: List[str], top_prompts_answers_list: List) -> List[str]:
+                           correct_answers_list: List[str], top_prompts_answers_list: Optional[List[Any]] = None) -> List[str]:
         """
         Realiza cruzamiento usando GPT (placeholder)
         """
