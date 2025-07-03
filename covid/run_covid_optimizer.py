@@ -62,27 +62,17 @@ class CovidOptimizerRunner:
     
     def start_ssh_tunnel(self):
         """
-        Inicia el túnel SSH en background
+        Inicia el túnel SSH automáticamente usando credenciales del JSON
         """
-        print("🔗 Iniciando túnel SSH...")
+        print("🔗 Iniciando túnel SSH automático...")
         
         try:
-            # Comando para crear túnel SSH
-            cmd = [
-                'ssh', '-N', '-L', f'{self.ssh_port}:172.16.40.247:11434',
-                'ignacio.medina1@200.14.84.16', '-p', '8080',
-                '-o', 'StrictHostKeyChecking=no',
-                '-o', 'UserKnownHostsFile=/dev/null',
-                '-o', 'ServerAliveInterval=60',
-                '-o', 'BatchMode=no'  # Permitir entrada de contraseña
-            ]
+            # Usar el script automático de SSH
+            cmd = [sys.executable, "setup_ssh_tunnel_auto.py"]
             
-            print(f"   Comando SSH: {' '.join(cmd)}")
-            print("   💡 Se te pedirán las contraseñas:")
-            print("      1. ignacio.udp2025")
-            print("      2. research202x")
+            print("   💡 Usando credenciales automáticas desde ssh_credentials.json")
             
-            # Crear túnel en background
+            # Ejecutar script automático en background
             self.tunnel_process = subprocess.Popen(
                 cmd,
                 stdin=subprocess.PIPE,
@@ -92,18 +82,23 @@ class CovidOptimizerRunner:
             
             # Esperar un poco para que se establezca
             print("   Esperando conexión...")
-            time.sleep(10)
+            time.sleep(15)  # Más tiempo para la conexión automática
             
             # Verificar si el proceso sigue activo
             if self.tunnel_process.poll() is None:
-                print("✅ Túnel SSH iniciado")
+                print("✅ Túnel SSH automático iniciado")
                 return True
             else:
-                print("❌ Error al iniciar túnel SSH")
+                print("❌ Error al iniciar túnel SSH automático")
+                # Mostrar el error si está disponible
+                if self.tunnel_process.stderr:
+                    stderr_output = self.tunnel_process.stderr.read().decode()
+                    if stderr_output:
+                        print(f"   Error: {stderr_output}")
                 return False
                 
         except Exception as e:
-            print(f"❌ Error configurando túnel SSH: {e}")
+            print(f"❌ Error configurando túnel SSH automático: {e}")
             return False
     
     def test_connection(self):

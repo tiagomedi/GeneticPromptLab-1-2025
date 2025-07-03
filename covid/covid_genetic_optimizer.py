@@ -217,7 +217,20 @@ class CovidGeneticOptimizer(GeneticPromptLab):
                 cluster_embeddings = self.text_embeddings[cluster_indices]
                 centroid = cluster_embeddings.mean(axis=0)  # type: ignore
                 
-                similarities = cosine_similarity(cluster_embeddings, centroid.reshape(1, -1))
+                # Convertir matrices sparse a arrays numpy densos
+                from scipy.sparse import issparse
+                
+                if issparse(cluster_embeddings):
+                    cluster_embeddings_array = cluster_embeddings.toarray()  # type: ignore
+                else:
+                    cluster_embeddings_array = np.asarray(cluster_embeddings)
+                
+                if issparse(centroid):
+                    centroid_array = centroid.toarray().reshape(1, -1)  # type: ignore
+                else:
+                    centroid_array = np.asarray(centroid).reshape(1, -1)
+                
+                similarities = cosine_similarity(cluster_embeddings_array, centroid_array)
                 best_idx = cluster_indices[similarities.argmax()]
                 selected_texts.append(self.sampled_texts[best_idx])
         
