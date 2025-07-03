@@ -204,6 +204,103 @@ class RemoteSSHExecutor:
         # Probar Llama3 con método interactivo
         return self.test_llama_interactive()
     
+    def run_ollama_structured_command(self, payload: Dict[str, Any], timeout: int = 30) -> Tuple[bool, str]:
+        """Ejecutar un comando estructurado con ollama usando el formato JSON especificado"""
+        try:
+            # Extraer información del payload
+            modelo = payload.get("model", "llama3.1")
+            messages = payload.get("messages", [])
+            temperatura = payload.get("temperature", 0.7)
+            
+            # Construir el prompt completo a partir de los mensajes
+            prompt_parts = []
+            for message in messages:
+                role = message.get("role", "")
+                content = message.get("content", "")
+                
+                if role == "system":
+                    prompt_parts.append(f"System: {content}")
+                elif role == "user":
+                    prompt_parts.append(f"User: {content}")
+                elif role == "assistant":
+                    prompt_parts.append(f"Assistant: {content}")
+            
+            # Combinar todas las partes del prompt
+            full_prompt = "\n\n".join(prompt_parts)
+            
+            # Crear una sesión interactiva
+            channel = self.target_client.invoke_shell()
+            
+            # Enviar comando para iniciar ollama con el modelo específico
+            channel.send(f"ollama run {modelo}\n")
+            time.sleep(3)  # Esperar a que se inicie
+            
+            # Limpiar el buffer
+            while channel.recv_ready():
+                channel.recv(1024)
+            
+            # Enviar el prompt estructurado
+            channel.send(f"{full_prompt}\n")
+            time.sleep(10)  # Esperar más tiempo para la respuesta estructurada
+            
+            # Leer toda la respuesta
+            output = ""
+            max_attempts = 15
+            attempts = 0
+            
+            while attempts < max_attempts:
+                if channel.recv_ready():
+                    data = channel.recv(1024).decode()
+                    output += data
+                    attempts = 0  # Reset counter if we're still receiving data
+                else:
+                    time.sleep(0.5)
+                    attempts += 1
+            
+            # Salir de ollama
+            channel.send("/bye\n")
+            time.sleep(1)
+            channel.close()
+            
+            # Extraer solo la respuesta generada
+            if output:
+                # Buscar la respuesta después del prompt
+                lines = output.split('\n')
+                response_started = False
+                response_lines = []
+                
+                for line in lines:
+                    # Si encontramos partes del prompt, comenzamos a buscar la respuesta
+                    if not response_started and ("User:" in line or "Assistant:" in line):
+                        response_started = True
+                        continue
+                    
+                    # Si ya comenzamos a recolectar y encontramos el prompt de ollama, paramos
+                    if response_started and (">>>" in line or "Send a message" in line):
+                        break
+                    
+                    # Recolectar líneas de respuesta
+                    if response_started and line.strip():
+                        # Filtrar líneas que no son parte de la respuesta
+                        if not any(marker in line for marker in [">>>", "Send a message", "Use /bye"]):
+                            response_lines.append(line.strip())
+                
+                response = '\n'.join(response_lines).strip()
+                
+                # Limpiar respuesta de artefactos comunes
+                response = response.replace(">>> ", "").replace("Send a message (/? for help)", "")
+                
+                if response and len(response) > 10:  # Asegurar que hay contenido real
+                    return True, response
+                else:
+                    return False, "Respuesta vacía o muy corta"
+            else:
+                return False, "No se recibió salida"
+                
+        except Exception as e:
+            print(f"❌ Error ejecutando comando ollama estructurado: {e}")
+            return False, str(e)
+    
     def run_ollama_command(self, prompt: str, timeout: int = 30) -> Tuple[bool, str]:
         """Ejecutar un comando específico con ollama"""
         try:
@@ -214,39 +311,62 @@ class RemoteSSHExecutor:
             channel.send("ollama run llama3.1\n")
             time.sleep(3)  # Esperar a que se inicie
             
+            # Limpiar el buffer
+            while channel.recv_ready():
+                channel.recv(1024)
+            
             # Enviar el prompt
             channel.send(f"{prompt}\n")
-            time.sleep(5)  # Esperar respuesta
+            time.sleep(8)  # Esperar más tiempo para la respuesta
             
-            # Leer respuesta
+            # Leer toda la respuesta
             output = ""
-            while channel.recv_ready():
-                output += channel.recv(1024).decode()
+            max_attempts = 10
+            attempts = 0
+            
+            while attempts < max_attempts:
+                if channel.recv_ready():
+                    data = channel.recv(1024).decode()
+                    output += data
+                    attempts = 0  # Reset counter if we're still receiving data
+                else:
+                    time.sleep(0.5)
+                    attempts += 1
             
             # Salir de ollama
             channel.send("/bye\n")
             time.sleep(1)
             channel.close()
             
-            # Limpiar la salida para extraer solo la respuesta
-            lines = output.split('\n')
-            response_lines = []
-            collecting = False
-            
-            for line in lines:
-                if ">>>" in line and collecting:
-                    break
-                if collecting:
-                    response_lines.append(line)
-                if prompt in line:
-                    collecting = True
-            
-            response = '\n'.join(response_lines).strip()
-            
-            if response:
-                return True, response
+            # Extraer solo la respuesta generada (después del prompt)
+            if output:
+                # Buscar el patrón del prompt en la salida
+                lines = output.split('\n')
+                response_started = False
+                response_lines = []
+                
+                for line in lines:
+                    # Si encontramos el prompt, comenzamos a recolectar la respuesta
+                    if not response_started and prompt.strip() in line:
+                        response_started = True
+                        continue
+                    
+                    # Si ya comenzamos a recolectar y encontramos el prompt de ollama, paramos
+                    if response_started and (">>>" in line or "Send a message" in line):
+                        break
+                    
+                    # Recolectar líneas de respuesta
+                    if response_started and line.strip():
+                        response_lines.append(line.strip())
+                
+                response = '\n'.join(response_lines).strip()
+                
+                if response and len(response) > 5:  # Asegurar que hay contenido real
+                    return True, response
+                else:
+                    return False, "Respuesta vacía o muy corta"
             else:
-                return False, "No se recibió respuesta"
+                return False, "No se recibió salida"
                 
         except Exception as e:
             print(f"❌ Error ejecutando comando ollama: {e}")

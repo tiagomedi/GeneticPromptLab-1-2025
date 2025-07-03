@@ -21,13 +21,17 @@ class CovidOptimizerRunner:
                  population_size: int = 5,
                  generations: int = 3,
                  mutation_rate: float = 0.1,
-                 sample_size: int = 500):
+                 sample_size: int = 500,
+                 modelo_llm: str = "llama3.1",
+                 temperatura: float = 0.7):
         
         self.corpus_file = corpus_file
         self.population_size = population_size
         self.generations = generations
         self.mutation_rate = mutation_rate
         self.sample_size = sample_size
+        self.modelo_llm = modelo_llm
+        self.temperatura = temperatura
         
     def setup_environment(self):
         """
@@ -97,7 +101,9 @@ class CovidOptimizerRunner:
                 population_size=self.population_size,
                 generations=self.generations,
                 mutation_rate=self.mutation_rate,
-                sample_size=self.sample_size
+                sample_size=self.sample_size,
+                modelo_llm=self.modelo_llm,
+                temperatura=self.temperatura
             )
             
             optimizer.optimize()
@@ -155,6 +161,8 @@ class CovidOptimizerRunner:
         print(f"   🧬 Generaciones: {self.generations}")
         print(f"   🎲 Tasa de mutación: {self.mutation_rate}")
         print(f"   📏 Tamaño de muestra: {self.sample_size}")
+        print(f"   🤖 Modelo LLM: {self.modelo_llm}")
+        print(f"   🌡️ Temperatura: {self.temperatura}")
         print()
     
     def _show_completion_info(self):
@@ -212,6 +220,10 @@ def main():
                        help="Tasa de mutación (default: 0.1)")
     parser.add_argument("--sample-size", type=int, default=500,
                        help="Tamaño de muestra del corpus (default: 500)")
+    parser.add_argument("--modelo-llm", type=str, default="llama3.1",
+                       help="Modelo LLM a usar (default: llama3.1)")
+    parser.add_argument("--temperatura", type=float, default=0.7,
+                       help="Temperatura para la generación (default: 0.7)")
     parser.add_argument("--test-only", action="store_true",
                        help="Solo ejecutar pruebas de conexión")
     
@@ -223,7 +235,9 @@ def main():
         population_size=args.population,
         generations=args.generations,
         mutation_rate=args.mutation_rate,
-        sample_size=args.sample_size
+        sample_size=args.sample_size,
+        modelo_llm=args.modelo_llm,
+        temperatura=args.temperatura
     )
     
     if args.test_only:

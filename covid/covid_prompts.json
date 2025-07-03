@@ -1,0 +1,22 @@
+{
+  "best_prompt": "Escribe sobre coronavirus",
+  "best_fitness": 0.004251089617021751,
+  "history": [
+    {
+      "generation": 1,
+      "best_fitness": 0.004251089617021751,
+      "avg_fitness": 0.003204410683796698
+    },
+    {
+      "generation": 2,
+      "best_fitness": 0.004251089617021751,
+      "avg_fitness": 0.0029097575858375285
+    }
+  ],
+  "parameters": {
+    "population_size": 3,
+    "generations": 2,
+    "mutation_rate": 0.1,
+    "sample_size": 3
+  }
+}
