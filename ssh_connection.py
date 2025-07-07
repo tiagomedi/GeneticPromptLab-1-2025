@@ -137,7 +137,7 @@ class SSHConnectionManager:
         Returns:
             Tuple of (success, stdout, stderr)
         """
-        if not self.is_connected():
+        if not self.is_connected() or self.target_client is None:
             return False, "", "No SSH connection available"
         
         timeout = timeout or (self.credentials or {}).get('connection_settings', {}).get('command_timeout', 30)
@@ -177,7 +177,7 @@ class SSHConnectionManager:
         Returns:
             Tuple of (success, output)
         """
-        if not self.is_connected():
+        if not self.is_connected() or self.target_client is None:
             return False, "No SSH connection available"
         
         timeout = timeout or (self.credentials or {}).get('connection_settings', {}).get('command_timeout', 30)
@@ -199,8 +199,9 @@ class SSHConnectionManager:
             # Read output
             output = ""
             start_time = time.time()
+            timeout_val = int(timeout) if timeout else 30
             
-            while time.time() - start_time < timeout:
+            while time.time() - start_time < timeout_val:
                 if channel.recv_ready():
                     data = channel.recv(1024).decode()
                     output += data
@@ -222,6 +223,8 @@ class SSHConnectionManager:
     def test_llm_availability(self, model: Optional[str] = None) -> bool:
         """Test if LLM service is available and working"""
         model = model or (self.credentials or {}).get('llm_config', {}).get('model', 'llama3.1')
+        if not model:
+            model = 'llama3.1'
         
         self.logger.info(f"🧪 Testing LLM availability: {model}")
         
