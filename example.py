@@ -1,11 +1,6 @@
-from openai import OpenAI
 import pandas as pd
 import json
 from GeneticPromptLab import QuestionsAnswersOptimizer
-
-with open("openai_api.key", "r") as f:
-    key = f.read()
-client = OpenAI(api_key=key.strip())
 
 def trec():
     # Configuration
@@ -40,7 +35,10 @@ def agnews():
     return problem_description, train_questions_list, train_answers_label, test_questions_list, test_answers_label, label_dict, model_name
 
 def main():
-    print("AGNEWS:")
+    print("🚀 GeneticPromptLab - Sistema Solo SSH/Ollama")
+    print("=" * 60)
+    
+    print("\n📋 AGNEWS Classification:")
     problem_description, train_questions_list, train_answers_label, test_questions_list, test_answers_label, label_dict, model_name = agnews()
     population_size = 8
     generations = 10
@@ -48,7 +46,6 @@ def main():
     num_retries = 2
 
     lab = QuestionsAnswersOptimizer(
-        client=client, 
         problem_description=problem_description, 
         train_questions_list=train_questions_list, 
         train_answers_label=train_answers_label, 
@@ -59,20 +56,27 @@ def main():
         sample_p=sample_p, 
         init_and_fitness_sample=population_size, 
         window_size_init=2,
-        num_retries=num_retries)
+        num_retries=num_retries,
+        ssh_credentials="ssh_credentials.json",
+        modelo_llm="llama3.1",
+        temperatura=0.7
+    )
+    
+    print(f"✅ Optimizador AG News configurado - usando SSH/Ollama")
     optimized_prompts = lab.genetic_algorithm(generations)
-    print(optimized_prompts)
-    print("-------- EXPERIMENT COMPLETED --------")
-    print("TREC:")
+    print(f"📝 Prompts optimizados:")
+    for i, prompt in enumerate(optimized_prompts[:3]):
+        print(f"  {i+1}. {prompt[:100]}...")
+    
+    print("\n" + "="*60)
+    print("📋 TREC Classification:")
     problem_description, train_questions_list, train_answers_label, test_questions_list, test_answers_label, label_dict, model_name = trec()
     population_size = 8
     generations = 10
     sample_p = 0.01
     num_retries = 2
 
-
     lab = QuestionsAnswersOptimizer(
-        client=client, 
         problem_description=problem_description, 
         train_questions_list=train_questions_list, 
         train_answers_label=train_answers_label, 
@@ -83,10 +87,29 @@ def main():
         sample_p=sample_p, 
         init_and_fitness_sample=population_size, 
         window_size_init=2, 
-        num_retries=num_retries)
+        num_retries=num_retries,
+        ssh_credentials="ssh_credentials.json",
+        modelo_llm="llama3.1",
+        temperatura=0.7
+    )
+    
+    print(f"✅ Optimizador TREC configurado - usando SSH/Ollama")
     optimized_prompts = lab.genetic_algorithm(generations)
-    print(optimized_prompts)
-    print("-------- EXPERIMENT COMPLETED --------")
+    print(f"📝 Prompts optimizados:")
+    for i, prompt in enumerate(optimized_prompts[:3]):
+        print(f"  {i+1}. {prompt[:100]}...")
+    
+    print("\n🎉 -------- EXPERIMENTOS COMPLETADOS --------")
+    print("💾 Resultados guardados en directorio 'runs/'")
+    print("📊 Usa visualizer.py para ver gráficos de evolución")
 
 if __name__=='__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"\n❌ Error durante ejecución: {e}")
+        print("\n💡 Asegúrate de que:")
+        print("   - ssh_credentials.json esté configurado")
+        print("   - El servidor SSH esté accesible")
+        print("   - Ollama esté ejecutándose con llama3.1")
+        print("   - Los archivos de datos estén en ./data/")
