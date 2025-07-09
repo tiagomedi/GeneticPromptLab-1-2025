@@ -1,0 +1,500 @@
+{
+  "timestamp": "2025-07-07T02:04:13.155592",
+  "corpus_size": 100,
+  "population_size": 15,
+  "methods_compared": [
+    "random",
+    "clustering",
+    "stratified"
+  ],
+  "best_method": "clustering",
+  "results": {
+    "random": {
+      "indices": [
+        47,
+        0,
+        57,
+        1,
+        69,
+        88,
+        20,
+        3,
+        31,
+        22,
+        37,
+        40,
+        25,
+        60,
+        81
+      ],
+      "metrics": {
+        "avg_pairwise_distance": 58.625362475593924,
+        "min_pairwise_distance": 1.4142135623730951,
+        "max_pairwise_distance": 145.9143584435747,
+        "std_pairwise_distance": 41.27653799546346
+      },
+      "prompts": [
+        {
+          "id": "prompt_0",
+          "corpus_index": 47,
+          "role": "disease surveillance specialist",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "highlighting prevention measures, from a public health surveillance perspective",
+          "texto": "pb how are halaat regarding corona ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: identifying pandemic-related themes and patterns\nModifications: highlighting prevention measures, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"pb how are halaat regarding corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_1",
+          "corpus_index": 0,
+          "role": "disease surveillance specialist",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "with focus on symptom identification, from a public health surveillance perspective",
+          "texto": "i live i brazil my familys terrify my aunt has chagas disease in her heart if she take corona the chance of dying is very high ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: identifying pandemic-related themes and patterns\nModifications: with focus on symptom identification, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"i live i brazil my familys terrify my aunt has chagas disease in her heart if she take corona the chance of dying is very high \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_2",
+          "corpus_index": 57,
+          "role": "medical researcher",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective, considering healthcare system impact",
+          "texto": "there is hope hold onto it ",
+          "full_prompt": "Role: medical researcher\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective, considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"there is hope hold onto it \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_3",
+          "corpus_index": 1,
+          "role": "epidemiologist",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "emphasizing transmission patterns, considering healthcare system impact",
+          "texto": "see has corona collect mic from asuu ",
+          "full_prompt": "Role: epidemiologist\nTask Description: detecting health emergency indicators in text\nModifications: emphasizing transmission patterns, considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"see has corona collect mic from asuu \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_4",
+          "corpus_index": 69,
+          "role": "healthcare analyst",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "considering healthcare system impact",
+          "texto": "all talk soon so more can be ok and sky is prove them nazi paedophile elizabeth fault for corona then say to law force them response and be end off corona ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: classifying content based on COVID-19 relevance\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"all talk soon so more can be ok and sky is prove them nazi paedophile elizabeth fault for corona then say to law force them response and be end off corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_5",
+          "corpus_index": 88,
+          "role": "healthcare analyst",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "considering healthcare system impact",
+          "texto": "i just read police stopped a few corona parties here in freiburg what is wrong with people ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"i just read police stopped a few corona parties here in freiburg what is wrong with people \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_6",
+          "corpus_index": 20,
+          "role": "public health expert",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "with focus on symptom identification",
+          "texto": "so uh prince charles is tested positive for corona and people saying camilla should be next got me ",
+          "full_prompt": "Role: public health expert\nTask Description: analyzing text content for COVID-19 related information\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"so uh prince charles is tested positive for corona and people saying camilla should be next got me \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_7",
+          "corpus_index": 3,
+          "role": "public health expert",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "highlighting prevention measures, emphasizing transmission patterns",
+          "texto": "i search about vit u and its literally talk about ulcer and i was like  since when we need to take care our stomach in corona  hahhaha ",
+          "full_prompt": "Role: public health expert\nTask Description: identifying pandemic-related themes and patterns\nModifications: highlighting prevention measures, emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"i search about vit u and its literally talk about ulcer and i was like  since when we need to take care our stomach in corona  hahhaha \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_8",
+          "corpus_index": 31,
+          "role": "epidemiologist",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "with focus on symptom identification",
+          "texto": "half corona ",
+          "full_prompt": "Role: epidemiologist\nTask Description: analyzing text content for COVID-19 related information\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"half corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_9",
+          "corpus_index": 22,
+          "role": "disease surveillance specialist",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "considering healthcare system impact",
+          "texto": "due to his racismmaybe we should call it trumps corona since he was purposely slow to act and then tried to make money off of it ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"due to his racismmaybe we should call it trumps corona since he was purposely slow to act and then tried to make money off of it \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_10",
+          "corpus_index": 37,
+          "role": "public health expert",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "emphasizing transmission patterns",
+          "texto": "yeah ive been seeing some posts how trump was shit and when the virus was there he moved so slow like as if not taking immediate action ",
+          "full_prompt": "Role: public health expert\nTask Description: detecting health emergency indicators in text\nModifications: emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"yeah ive been seeing some posts how trump was shit and when the virus was there he moved so slow like as if not taking immediate action \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_11",
+          "corpus_index": 40,
+          "role": "public health expert",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "highlighting prevention measures",
+          "texto": "we were originally told our pets could not get it dogs socially isolate to protect the pack when they are sick if dogs can do it so can you ",
+          "full_prompt": "Role: public health expert\nTask Description: identifying pandemic-related themes and patterns\nModifications: highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"we were originally told our pets could not get it dogs socially isolate to protect the pack when they are sick if dogs can do it so can you \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_12",
+          "corpus_index": 25,
+          "role": "epidemiologist",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "considering healthcare system impact",
+          "texto": "united states wants to help iran fight the corona virus balance me here usa a se yone ya maloba e attack soleimani or maybe ke lost ",
+          "full_prompt": "Role: epidemiologist\nTask Description: detecting health emergency indicators in text\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"united states wants to help iran fight the corona virus balance me here usa a se yone ya maloba e attack soleimani or maybe ke lost \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_13",
+          "corpus_index": 60,
+          "role": "medical researcher",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "corona motivational poetry with english translation ",
+          "full_prompt": "Role: medical researcher\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"corona motivational poetry with english translation \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_14",
+          "corpus_index": 81,
+          "role": "epidemiologist",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "highlighting prevention measures, emphasizing transmission patterns",
+          "texto": "me encouraging police to beat everyone on the road ",
+          "full_prompt": "Role: epidemiologist\nTask Description: detecting health emergency indicators in text\nModifications: highlighting prevention measures, emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"me encouraging police to beat everyone on the road \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        }
+      ]
+    },
+    "clustering": {
+      "indices": [
+        24,
+        70,
+        30,
+        78,
+        67,
+        74,
+        46,
+        35,
+        42,
+        47,
+        6,
+        96,
+        19,
+        62,
+        41
+      ],
+      "metrics": {
+        "avg_pairwise_distance": 96.66154579056038,
+        "min_pairwise_distance": 15.066519173319364,
+        "max_pairwise_distance": 264.39742812667447,
+        "std_pairwise_distance": 62.682820944576775
+      },
+      "prompts": [
+        {
+          "id": "prompt_0",
+          "corpus_index": 24,
+          "role": "healthcare analyst",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "considering healthcare system impact",
+          "texto": "dont rake up the past by corona think happy be happy many people have the same misery may god bless us ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"dont rake up the past by corona think happy be happy many people have the same misery may god bless us \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_1",
+          "corpus_index": 70,
+          "role": "public health expert",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "with focus on symptom identification",
+          "texto": "you ignored this if government was so beholden to big pharma that it was just actively letting us be poisoned why would they need such a long and expensive testing period we wont have a vaccine for corona until next year i could just buy colloidal silver now willy nilly ",
+          "full_prompt": "Role: public health expert\nTask Description: analyzing text content for COVID-19 related information\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"you ignored this if government was so beholden to big pharma that it was just actively letting us be poisoned why would they need such a long and expensive testing period we wont have a vaccine for corona until next year i could just buy colloidal silver now willy nilly \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_2",
+          "corpus_index": 30,
+          "role": "healthcare analyst",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "with focus on symptom identification",
+          "texto": "not corona ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: detecting health emergency indicators in text\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"not corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_3",
+          "corpus_index": 78,
+          "role": "medical researcher",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "considering healthcare system impact",
+          "texto": "sir please take immediate action on bringing the indians back to india who are stuck in united states on h1b visa considering the alarming number of corona cases which have now crossed china ",
+          "full_prompt": "Role: medical researcher\nTask Description: detecting health emergency indicators in text\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"sir please take immediate action on bringing the indians back to india who are stuck in united states on h1b visa considering the alarming number of corona cases which have now crossed china \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_4",
+          "corpus_index": 67,
+          "role": "healthcare analyst",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "indias fight against corona actually began with in 2014 ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: detecting health emergency indicators in text\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"indias fight against corona actually began with in 2014 \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_5",
+          "corpus_index": 74,
+          "role": "disease surveillance specialist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "im a director of my own ltd company and the only employee of the company what does this mean for coronacash im lost hmrc website is as clear as mud ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"im a director of my own ltd company and the only employee of the company what does this mean for coronacash im lost hmrc website is as clear as mud \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_6",
+          "corpus_index": 46,
+          "role": "public health expert",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "considering healthcare system impact, emphasizing transmission patterns",
+          "texto": "i hate the fact that i had already planned on getting more hours in order to buy myself a car and now im barely getting any hours at all and most of my paycheck goes towards the house bills i help my parents payi hate u corona ",
+          "full_prompt": "Role: public health expert\nTask Description: classifying content based on COVID-19 relevance\nModifications: considering healthcare system impact, emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"i hate the fact that i had already planned on getting more hours in order to buy myself a car and now im barely getting any hours at all and most of my paycheck goes towards the house bills i help my parents payi hate u corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_7",
+          "corpus_index": 35,
+          "role": "healthcare analyst",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "highlighting prevention measures, with focus on symptom identification",
+          "texto": "this needs to be watched and shared in light of the news coming out about burr and others trading on corona virus information ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: identifying pandemic-related themes and patterns\nModifications: highlighting prevention measures, with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"this needs to be watched and shared in light of the news coming out about burr and others trading on corona virus information \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_8",
+          "corpus_index": 42,
+          "role": "healthcare analyst",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "considering healthcare system impact, with focus on symptom identification",
+          "texto": "salute to all health workers who are fighting against corona virus tirelessly ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: identifying pandemic-related themes and patterns\nModifications: considering healthcare system impact, with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"salute to all health workers who are fighting against corona virus tirelessly \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_9",
+          "corpus_index": 47,
+          "role": "epidemiologist",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "considering healthcare system impact, with focus on symptom identification",
+          "texto": "pb how are halaat regarding corona ",
+          "full_prompt": "Role: epidemiologist\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact, with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"pb how are halaat regarding corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_10",
+          "corpus_index": 6,
+          "role": "medical researcher",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "highlighting prevention measures",
+          "texto": "before announcing 21 days lock down fiscal measures to help poor daily wagers should have come pm is acting very fast on corona but what about the economic task force ",
+          "full_prompt": "Role: medical researcher\nTask Description: detecting health emergency indicators in text\nModifications: highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"before announcing 21 days lock down fiscal measures to help poor daily wagers should have come pm is acting very fast on corona but what about the economic task force \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_11",
+          "corpus_index": 96,
+          "role": "healthcare analyst",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "emphasizing transmission patterns",
+          "texto": "before its too late i humbly urge jharkhand govt to start doing the screening of people coming from other states and countries we really do not want to see such breaking news like we did saw today for bihar ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: detecting health emergency indicators in text\nModifications: emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"before its too late i humbly urge jharkhand govt to start doing the screening of people coming from other states and countries we really do not want to see such breaking news like we did saw today for bihar \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_12",
+          "corpus_index": 19,
+          "role": "disease surveillance specialist",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "highlighting prevention measures",
+          "texto": "narendra modi sirkindly consider suspension of all international flights coming to india which are the main sources of spreading corona virus through passengers landing here from it is must for arresting virusnarendramodi ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: detecting health emergency indicators in text\nModifications: highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"narendra modi sirkindly consider suspension of all international flights coming to india which are the main sources of spreading corona virus through passengers landing here from it is must for arresting virusnarendramodi \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_13",
+          "corpus_index": 62,
+          "role": "public health expert",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "now i just gotta find someone who can do a sew in for me once this corona is over and i need it to be flat last time i had a weave it was a tragedy i took it out after a week ",
+          "full_prompt": "Role: public health expert\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"now i just gotta find someone who can do a sew in for me once this corona is over and i need it to be flat last time i had a weave it was a tragedy i took it out after a week \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_14",
+          "corpus_index": 41,
+          "role": "disease surveillance specialist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "with focus on symptom identification, from a public health surveillance perspective",
+          "texto": "you know its not possible you know how we dragged them to address to nigerians concerning corona virus you know how he gave us 23secs video bro they wont but im simply hapy abt this virus you cant run or hide nor go to uk for another cloning ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: classifying content based on COVID-19 relevance\nModifications: with focus on symptom identification, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"you know its not possible you know how we dragged them to address to nigerians concerning corona virus you know how he gave us 23secs video bro they wont but im simply hapy abt this virus you cant run or hide nor go to uk for another cloning \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        }
+      ]
+    },
+    "stratified": {
+      "indices": [
+        48,
+        84,
+        68,
+        95,
+        17,
+        97,
+        20,
+        44,
+        65,
+        90,
+        62,
+        6,
+        54,
+        74,
+        10
+      ],
+      "metrics": {
+        "avg_pairwise_distance": 75.60035092659248,
+        "min_pairwise_distance": 3.0,
+        "max_pairwise_distance": 203.0492551082126,
+        "std_pairwise_distance": 53.08821308301397,
+        "n_strata": 3
+      },
+      "prompts": [
+        {
+          "id": "prompt_0",
+          "corpus_index": 48,
+          "role": "medical researcher",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "considering healthcare system impact",
+          "texto": "street hockey  corona virus talk via ",
+          "full_prompt": "Role: medical researcher\nTask Description: classifying content based on COVID-19 relevance\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"street hockey  corona virus talk via \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_1",
+          "corpus_index": 84,
+          "role": "epidemiologist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "emphasizing transmission patterns, from a public health surveillance perspective",
+          "texto": "corona and pakistan both of them dangerous for baloch nation ",
+          "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: emphasizing transmission patterns, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"corona and pakistan both of them dangerous for baloch nation \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_2",
+          "corpus_index": 68,
+          "role": "epidemiologist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "a lot of beauty is shared during these days ",
+          "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"a lot of beauty is shared during these days \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_3",
+          "corpus_index": 95,
+          "role": "medical researcher",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "emphasizing transmission patterns",
+          "texto": "sigh the sad truth ",
+          "full_prompt": "Role: medical researcher\nTask Description: detecting health emergency indicators in text\nModifications: emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"sigh the sad truth \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_4",
+          "corpus_index": 17,
+          "role": "epidemiologist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "with focus on symptom identification, considering healthcare system impact",
+          "texto": "coronavirus statistics and information ",
+          "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: with focus on symptom identification, considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"coronavirus statistics and information \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_5",
+          "corpus_index": 97,
+          "role": "public health expert",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "considering healthcare system impact",
+          "texto": "man if corona doesnt kill me i might end up just killing myself ",
+          "full_prompt": "Role: public health expert\nTask Description: detecting health emergency indicators in text\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"man if corona doesnt kill me i might end up just killing myself \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_6",
+          "corpus_index": 20,
+          "role": "medical researcher",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "with focus on symptom identification",
+          "texto": "so uh prince charles is tested positive for corona and people saying camilla should be next got me ",
+          "full_prompt": "Role: medical researcher\nTask Description: analyzing text content for COVID-19 related information\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"so uh prince charles is tested positive for corona and people saying camilla should be next got me \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_7",
+          "corpus_index": 44,
+          "role": "public health expert",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "coronavirus when someone came to know he is infected from hanta virus after recovery from corona virus ",
+          "full_prompt": "Role: public health expert\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"coronavirus when someone came to know he is infected from hanta virus after recovery from corona virus \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_8",
+          "corpus_index": 65,
+          "role": "public health expert",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "highlighting prevention measures",
+          "texto": "wow thank you for telling me something i knew about a week ago maam ",
+          "full_prompt": "Role: public health expert\nTask Description: analyzing text content for COVID-19 related information\nModifications: highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"wow thank you for telling me something i knew about a week ago maam \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_9",
+          "corpus_index": 90,
+          "role": "disease surveillance specialist",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "with focus on symptom identification, from a public health surveillance perspective",
+          "texto": "id rather get corona than be hhorhorrhorn oh my god i cant even say it ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: identifying pandemic-related themes and patterns\nModifications: with focus on symptom identification, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"id rather get corona than be hhorhorrhorn oh my god i cant even say it \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_10",
+          "corpus_index": 62,
+          "role": "epidemiologist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "from a public health surveillance perspective, emphasizing transmission patterns",
+          "texto": "now i just gotta find someone who can do a sew in for me once this corona is over and i need it to be flat last time i had a weave it was a tragedy i took it out after a week ",
+          "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective, emphasizing transmission patterns\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"now i just gotta find someone who can do a sew in for me once this corona is over and i need it to be flat last time i had a weave it was a tragedy i took it out after a week \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_11",
+          "corpus_index": 6,
+          "role": "healthcare analyst",
+          "task_description": "identifying pandemic-related themes and patterns",
+          "modifics": "emphasizing transmission patterns, highlighting prevention measures",
+          "texto": "before announcing 21 days lock down fiscal measures to help poor daily wagers should have come pm is acting very fast on corona but what about the economic task force ",
+          "full_prompt": "Role: healthcare analyst\nTask Description: identifying pandemic-related themes and patterns\nModifications: emphasizing transmission patterns, highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"before announcing 21 days lock down fiscal measures to help poor daily wagers should have come pm is acting very fast on corona but what about the economic task force \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_12",
+          "corpus_index": 54,
+          "role": "epidemiologist",
+          "task_description": "classifying content based on COVID-19 relevance",
+          "modifics": "with focus on symptom identification, highlighting prevention measures",
+          "texto": "sant rampal ji maharaj can cure a terrible disease like cancer so there may be corona there is a lot of power in satbhagati please take refuge of sant rampal ji once must watch sadhna tv 730pm ",
+          "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: with focus on symptom identification, highlighting prevention measures\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"sant rampal ji maharaj can cure a terrible disease like cancer so there may be corona there is a lot of power in satbhagati please take refuge of sant rampal ji once must watch sadhna tv 730pm \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_13",
+          "corpus_index": 74,
+          "role": "medical researcher",
+          "task_description": "detecting health emergency indicators in text",
+          "modifics": "from a public health surveillance perspective",
+          "texto": "im a director of my own ltd company and the only employee of the company what does this mean for coronacash im lost hmrc website is as clear as mud ",
+          "full_prompt": "Role: medical researcher\nTask Description: detecting health emergency indicators in text\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"im a director of my own ltd company and the only employee of the company what does this mean for coronacash im lost hmrc website is as clear as mud \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        },
+        {
+          "id": "prompt_14",
+          "corpus_index": 10,
+          "role": "disease surveillance specialist",
+          "task_description": "analyzing text content for COVID-19 related information",
+          "modifics": "considering healthcare system impact, with focus on symptom identification",
+          "texto": "every indian has got time to show true patriotism dont fall pray to corona virus aware others too maintain social distancing dont let it convert to epidemic in india our health system wont be able to cure this epidemic ",
+          "full_prompt": "Role: disease surveillance specialist\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact, with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"every indian has got time to show true patriotism dont fall pray to corona virus aware others too maintain social distancing dont let it convert to epidemic in india our health system wont be able to cure this epidemic \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+        }
+      ]
+    }
+  }
+}

@@ -5,7 +5,11 @@ import logging
 import re
 import json
 import os
+import sys
 from typing import List, Dict, Tuple, Optional, Any
+
+# Agregar directorio padre al path para encontrar ssh_connection
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from ssh_connection import LLMRemoteExecutor
 
 class GeneticPromptLab:
@@ -525,3 +529,80 @@ Please provide a COVID-19 relevance score (0-100) and brief explanation."""
         
         prompt['modifics'] = ", ".join(current_modifics)
         return prompt
+
+
+if __name__ == "__main__":
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Generador de Población COVID usando Algoritmo Genético')
+    parser.add_argument('--corpus', default='data/corpus.csv', help='Archivo de corpus CSV')
+    parser.add_argument('--population-size', type=int, default=10, help='Tamaño de población')
+    parser.add_argument('--generations', type=int, default=5, help='Número de generaciones')
+    parser.add_argument('--mutation-rate', type=float, default=0.2, help='Tasa de mutación')
+    parser.add_argument('--sample-size', type=int, default=1000, help='Tamaño de muestra del corpus')
+    parser.add_argument('--modelo-llm', default='llama3.1', help='Modelo LLM a usar')
+    parser.add_argument('--temperatura', type=float, default=0.7, help='Temperatura para LLM')
+    parser.add_argument('--credentials', default='ssh_credentials.json', help='Archivo de credenciales SSH')
+    parser.add_argument('--output', default='population_output.json', help='Archivo de salida')
+    parser.add_argument('--generate-only', action='store_true', help='Solo generar población inicial, no ejecutar algoritmo')
+    
+    args = parser.parse_args()
+    
+    print("🧬 Iniciando GeneticPromptLab COVID")
+    print(f"📊 Parámetros: población={args.population_size}, generaciones={args.generations}, mutación={args.mutation_rate}")
+    
+    # Inicializar sistema
+    optimizer = GeneticPromptLab(
+        corpus_file=args.corpus,
+        population_size=args.population_size,
+        generations=args.generations,
+        mutation_rate=args.mutation_rate,
+        sample_size=args.sample_size,
+        modelo_llm=args.modelo_llm,
+        temperatura=args.temperatura,
+        credentials_file=args.credentials
+    )
+    
+    if args.generate_only:
+        # Solo generar población inicial
+        print("🔄 Generando solo población inicial...")
+        population = optimizer.generate_init_prompts()
+        
+        # Guardar población
+        output_data = {
+            'population': population,
+            'parameters': {
+                'population_size': args.population_size,
+                'modelo_llm': args.modelo_llm,
+                'temperatura': args.temperatura,
+                'corpus_file': args.corpus,
+                'generation_timestamp': pd.Timestamp.now().isoformat()
+            }
+        }
+        
+        with open(args.output, 'w', encoding='utf-8') as f:
+            json.dump(output_data, f, indent=2, ensure_ascii=False)
+        
+        print(f"💾 Población guardada en: {args.output}")
+        print(f"📋 Generados {len(population)} prompts estructurados")
+        
+    else:
+        # Ejecutar algoritmo genético completo
+        print("🚀 Ejecutando algoritmo genético completo...")
+        results = optimizer.genetic_algorithm(args.mutation_rate)
+        
+        # Guardar resultados
+        with open(args.output, 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+        
+        print(f"🎉 Optimización completada!")
+        print(f"💾 Resultados guardados en: {args.output}")
+        print(f"🏆 Mejor fitness: {results['best_fitness']:.3f}")
+        print(f"📈 Promedio final: {results['history'][-1]['avg_fitness']:.3f}")
+        
+        # Mostrar mejor prompt
+        best_prompt = results['best_prompt']
+        print("\n🌟 Mejor prompt encontrado:")
+        print(f"   Role: {best_prompt['role']}")
+        print(f"   Task: {best_prompt['task_description']}")
+        print(f"   Modifics: {best_prompt['modifics']}")

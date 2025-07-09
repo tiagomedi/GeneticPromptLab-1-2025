@@ -1,0 +1,117 @@
+{
+  "random": {
+    "metrics": {
+      "avg_pairwise_distance": 58.625362475593924,
+      "min_pairwise_distance": 1.4142135623730951,
+      "max_pairwise_distance": 145.9143584435747,
+      "std_pairwise_distance": 41.27653799546346
+    },
+    "sample_prompts": [
+      {
+        "id": "prompt_0",
+        "corpus_index": 47,
+        "role": "disease surveillance specialist",
+        "task_description": "identifying pandemic-related themes and patterns",
+        "modifics": "highlighting prevention measures, from a public health surveillance perspective",
+        "texto": "pb how are halaat regarding corona ",
+        "full_prompt": "Role: disease surveillance specialist\nTask Description: identifying pandemic-related themes and patterns\nModifications: highlighting prevention measures, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"pb how are halaat regarding corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_1",
+        "corpus_index": 0,
+        "role": "disease surveillance specialist",
+        "task_description": "identifying pandemic-related themes and patterns",
+        "modifics": "with focus on symptom identification, from a public health surveillance perspective",
+        "texto": "i live i brazil my familys terrify my aunt has chagas disease in her heart if she take corona the chance of dying is very high ",
+        "full_prompt": "Role: disease surveillance specialist\nTask Description: identifying pandemic-related themes and patterns\nModifications: with focus on symptom identification, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"i live i brazil my familys terrify my aunt has chagas disease in her heart if she take corona the chance of dying is very high \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_2",
+        "corpus_index": 57,
+        "role": "medical researcher",
+        "task_description": "classifying content based on COVID-19 relevance",
+        "modifics": "from a public health surveillance perspective, considering healthcare system impact",
+        "texto": "there is hope hold onto it ",
+        "full_prompt": "Role: medical researcher\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective, considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"there is hope hold onto it \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      }
+    ],
+    "population_size": 15
+  },
+  "clustering": {
+    "metrics": {
+      "avg_pairwise_distance": 96.66154579056038,
+      "min_pairwise_distance": 15.066519173319364,
+      "max_pairwise_distance": 264.39742812667447,
+      "std_pairwise_distance": 62.682820944576775
+    },
+    "sample_prompts": [
+      {
+        "id": "prompt_0",
+        "corpus_index": 24,
+        "role": "healthcare analyst",
+        "task_description": "analyzing text content for COVID-19 related information",
+        "modifics": "considering healthcare system impact",
+        "texto": "dont rake up the past by corona think happy be happy many people have the same misery may god bless us ",
+        "full_prompt": "Role: healthcare analyst\nTask Description: analyzing text content for COVID-19 related information\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"dont rake up the past by corona think happy be happy many people have the same misery may god bless us \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_1",
+        "corpus_index": 70,
+        "role": "public health expert",
+        "task_description": "analyzing text content for COVID-19 related information",
+        "modifics": "with focus on symptom identification",
+        "texto": "you ignored this if government was so beholden to big pharma that it was just actively letting us be poisoned why would they need such a long and expensive testing period we wont have a vaccine for corona until next year i could just buy colloidal silver now willy nilly ",
+        "full_prompt": "Role: public health expert\nTask Description: analyzing text content for COVID-19 related information\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"you ignored this if government was so beholden to big pharma that it was just actively letting us be poisoned why would they need such a long and expensive testing period we wont have a vaccine for corona until next year i could just buy colloidal silver now willy nilly \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_2",
+        "corpus_index": 30,
+        "role": "healthcare analyst",
+        "task_description": "detecting health emergency indicators in text",
+        "modifics": "with focus on symptom identification",
+        "texto": "not corona ",
+        "full_prompt": "Role: healthcare analyst\nTask Description: detecting health emergency indicators in text\nModifications: with focus on symptom identification\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"not corona \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      }
+    ],
+    "population_size": 15
+  },
+  "stratified": {
+    "metrics": {
+      "avg_pairwise_distance": 75.60035092659248,
+      "min_pairwise_distance": 3.0,
+      "max_pairwise_distance": 203.0492551082126,
+      "std_pairwise_distance": 53.08821308301397,
+      "n_strata": 3
+    },
+    "sample_prompts": [
+      {
+        "id": "prompt_0",
+        "corpus_index": 48,
+        "role": "medical researcher",
+        "task_description": "classifying content based on COVID-19 relevance",
+        "modifics": "considering healthcare system impact",
+        "texto": "street hockey  corona virus talk via ",
+        "full_prompt": "Role: medical researcher\nTask Description: classifying content based on COVID-19 relevance\nModifications: considering healthcare system impact\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"street hockey  corona virus talk via \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_1",
+        "corpus_index": 84,
+        "role": "epidemiologist",
+        "task_description": "classifying content based on COVID-19 relevance",
+        "modifics": "emphasizing transmission patterns, from a public health surveillance perspective",
+        "texto": "corona and pakistan both of them dangerous for baloch nation ",
+        "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: emphasizing transmission patterns, from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"corona and pakistan both of them dangerous for baloch nation \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      },
+      {
+        "id": "prompt_2",
+        "corpus_index": 68,
+        "role": "epidemiologist",
+        "task_description": "classifying content based on COVID-19 relevance",
+        "modifics": "from a public health surveillance perspective",
+        "texto": "a lot of beauty is shared during these days ",
+        "full_prompt": "Role: epidemiologist\nTask Description: classifying content based on COVID-19 relevance\nModifications: from a public health surveillance perspective\n\nBased on the above role and task, analyze this text for COVID-19 related content:\n\"a lot of beauty is shared during these days \"\n\nPlease provide a COVID-19 relevance score (0-100) and brief explanation."
+      }
+    ],
+    "population_size": 15
+  }
+}
